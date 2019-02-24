@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<canvas id="canvas" width="400px" height="400px" tabindex="0"></canvas>
+<!--
+canvas只支持鼠标事件而不支持键盘事件，所以有两种方法，意识Document.|Windows.addEventListener 或者是在canvas中添加tabindex=0
+-->
+<script>
+    window.onload =function() {
+        var canvas=document.getElementById("canvas");
+        var content=canvas.getContext("2d");
+        document.addEventListener("keydown", keyEvent);
+        setInterval(game,1000/2);
+        var xv=0,yv=0;
+        var px=10,py=10;
+        var gx=20,ty=20;
+        var ax=20,ay=20;
+        var snake=[];
+        var tail=5;
+        console.log(canvas.width);
+        function game() {
+            px+=xv;
+            py+=yv;
+            if(px<0){
+                px=gx-1;
+            }
+            if(px>gx-1){
+                px=0;
+            }
+            if(py<0){
+                py=gx-1;
+            }
+            if(py>gx-1) {
+                py = 0;
+            }
+
+
+            snake.push({x:px,y:py});
+            while(snake.length>tail){
+                snake.shift();
+            }
+
+
+            content.fillStyle="black";
+            content.fillRect(0,0,canvas.width,canvas.height);
+            content.fillStyle="green";
+            for(var i=0;i<snake.length;i++) {
+                content.fillRect(snake[i].x * ty, snake[i].y * ty, ty - 2, ty - 2);
+               if(i!=(snake.length-1)){
+                   if(px==snake[i].x&&py==snake[i].y){
+                     tail=5;
+                   }
+               }
+            }
+
+            if(px*ty==ax&&py*ty==ay){
+                tail++;
+                ax=Math.floor(Math.random()*20)*ty;
+                ay=Math.floor(Math.random()*20)*ty;
+            }
+
+            content.fillStyle="red";
+            content.fillRect(ax,ay,ty,ty);
+        }
+        function keyEvent(event) {
+            switch (event.keyCode) {
+                case 37: {
+                    xv = -1;
+                    yv = 0;
+                    return;
+                }
+                case 38: {
+                    xv = 0;
+                    yv = -1;
+                    return;
+                }
+                case 39: {
+                    xv = 1;
+                    yv = 0;
+                    return;
+                }
+                case 40: {
+                    xv = 0;
+                    yv = 1;
+                    return;
+                }
+
+            }
+        }
+    };
+
+</script>
+</body>
+</html>

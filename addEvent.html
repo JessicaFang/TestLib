@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .container {
+            width:100px;
+            height:100px;
+            color:#fff;
+            text-align:center;
+            font:bold 20px/100px "微软雅黑";
+            background-color: #c60;
+            cursor:pointer;
+        }
+
+    </style>
+</head>
+<body>
+//事件的触发顺序自内向外，这就是事件冒泡。
+//事件触发顺序变更为自外向内，这就是事件捕获。
+//true为事件捕获，false为事件冒泡;
+//主要取决于外面的div为true或者false
+<div id="outerDiv" class="container">
+    <div id="innerDiv" class="container" >请点我</div>
+</div>
+<script>
+    var console = console || {log: function( p ){ alert(p)}};
+    function outerFn(event) {
+        console.log("outerDiv Event");
+    }
+
+    function innerFn(event) {
+        console.log("innerDiv Event");
+    }
+
+    var innerDiv = document.getElementById("innerDiv");
+    if ( document.addEventListener ) {
+        innerDiv.addEventListener("click", innerFn, true);
+    } else {
+        innerDiv.attachEvent("onclick", innerFn);
+    }
+
+    var outerDiv = document.getElementById("outerDiv");
+    if ( document.addEventListener ) {
+        outerDiv.addEventListener("click", outerFn, false);
+    } else {
+        outerDiv.attachEvent("onclick", outerFn);
+    }
+
+
+</script>
+</body>
+</html>

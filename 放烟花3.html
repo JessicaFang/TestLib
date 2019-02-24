@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: #000;
+            font-size: 15px;
+        }
+
+        #tips{
+            width:350px;
+            height: 60px;
+            margin:0px auto;
+        }
+        a {
+            text-decoration: none;
+            background: #F06;
+            color: #FFF;
+            border-radius: 13px;
+            padding:5px;
+            margin-top:11px;
+            margin-left:15px;
+            display: inline-block;
+        }
+
+        .firework{
+            position:absolute;
+            width : 4px;
+            height: 30px;
+            border-radius :4px;
+        }
+
+        .fireworkChip{
+            position:absolute;
+            width : 11px;
+            height: 11px;
+            border-radius :4px;
+        }
+    </style>
+</head>
+<body>
+<div id="tips">
+    <a id="manual" href="javascript:;">手动放烟花</a>
+    <a id="auto" href="javascript:;">自动放烟花</a>
+    <a id="stop" href="javascript:;">停止放烟花</a>
+</div>
+</body>
+<script>
+   fgm={
+        getRanColor:function () {
+            var a=Math.round(Math.random()*255);
+            var b=Math.round(Math.random()*255);
+            var c=Math.round(Math.random()*255);
+            var str="rgb("+a+","+b+","+c+")";
+            return str;
+        },
+       rangeNum:function (min,max) {
+            return Math.random()*(max+1-min)+min;
+       }
+    };
+   var fireword=function(){
+        var Entry=document.createElement("div");
+        var chipList=[];
+        Entry.className="firework";
+        Entry.style.top=document.documentElement.clientHeight + "px";
+        Entry.style.left=(Math.random()*(document.documentElement.clientWidth-50))+"px";
+        Entry.style.background=fgm.getRanColor();
+        document.body.appendChild(Entry);
+        var timer1=setInterval(function () {
+           //offsetTop不是css样式，而是一种属性，以后一定要注意属性和方法的区别
+           Entry.style.top=Entry.offsetTop-30+"px";
+           if(Entry.offsetTop<200){
+               var indextop=Entry.style.top;
+               var indexleft=Entry.style.left;
+               document.body.removeChild(Entry);
+               clearInterval(timer1);
+               for (var i=0;i<30;i++){
+                   var chip=document.createElement("div");
+                   chip.className="fireworkChip";
+                   chip.style.top=indextop;
+                   chip.style.left=indexleft;
+                   chip.style.background=fgm.getRanColor();
+                   chip.speedX= (parseInt(Math.random()*2) == 0 ? 1 : -1)*parseInt(Math.random()*16 + 1);
+                   chip.speedY= (parseInt(Math.random()*2) == 0 ? 1 : -1)*parseInt(Math.random()*20 + 1);
+                   chipList[i]=chip;
+                   document.body.appendChild(chip);
+               }
+               var timer=setInterval(function () {
+                   for(var i=0;i<chipList.length;i++){
+                       var obj=chipList[i];
+                       obj.style.top=obj.offsetTop+obj.speedY+"px";
+                       obj.style.left=obj.offsetLeft+obj.speedX+"px";
+                       (obj.offsetTop < 0 || obj.offsetLeft < 0 || obj.offsetTop > document.documentElement.clientHeight || obj.offsetLeft > document.documentElement.clientWidth) && (document.body.removeChild(obj), chipList.splice(i, 1))
+                        obj.speedY++;
+                   }
+
+                   if(!chipList[0]){
+                       clearInterval(timer);
+                   }
+
+               },fgm.rangeNum(100,200))
+           }
+
+
+        },fgm.rangeNum(100,200))
+    };
+    window.onload=function() {
+        var manual = document.getElementById("manual");
+        var timer;
+        manual.onclick = function () {
+            fireword();
+        };
+        var auto=document.getElementById("auto");
+        auto.onclick=function () {
+            timer=setInterval(function () {
+                fireword();
+            },1000)
+        };
+        var stop=document.getElementById("stop");
+        stop.onclick=function () {
+            clearInterval(timer)
+        }
+
+
+    }
+</script>
+</html>
